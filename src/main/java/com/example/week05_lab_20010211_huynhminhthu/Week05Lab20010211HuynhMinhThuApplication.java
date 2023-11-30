@@ -13,33 +13,42 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Random;
 import java.time.LocalDate;
+
 @SpringBootApplication
 public class Week05Lab20010211HuynhMinhThuApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Week05Lab20010211HuynhMinhThuApplication.class, args);
-	}
-	@Autowired
-	private CandidateRepository candidateRepository;
-	@Autowired
-	private AddressRepository addressRepository;
-	@Bean
-	CommandLineRunner initData(){
-		return args -> {
-			Random rnd =new Random();
-			for (int i = 1; i < 1000; i++) {
-				Address add = new Address(rnd.nextInt(1,1000)+"","Quang Trung","HCM",
-						rnd.nextInt(70000,80000)+"", Country.VIETNAM);
-				addressRepository.save(add);
-				Candidate can=new Candidate("Name #"+i,
-						LocalDate.of(1998,rnd.nextInt(1,13),rnd.nextInt(1,29)),
-						add,
-						rnd.nextLong(1111111111L,9999999999L)+"",
-						"email_"+i+"@gmail.com");
-				candidateRepository.save(can);
-				System.out.println("Added: " +can);
-			}
-		};
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Week05Lab20010211HuynhMinhThuApplication.class, args);
+    }
+
+    @Autowired
+    private CandidateRepository candidateRepository;
+    @Autowired
+    private AddressRepository addressRepository;
+
+    @Bean
+    CommandLineRunner initData() {
+        return args -> {
+            Random rnd = new Random();
+            for (int i = 1; i < 1000; i++) {
+//				Address add = new Address(rnd.nextInt(1,1000)+"","Quang Trung","HCM",
+////						rnd.nextInt(70000,80000)+"", Country.VIETNAM);
+                Address add = new Address();
+                add.setStreet("Quang Trung");
+                add.setCity("HCM");
+                add.setNumber(String.valueOf(rnd.nextInt(1,1000)));
+                add.setZipCode(String.valueOf(rnd.nextInt(70000,80000)));
+                add.setCountry(Country.VIETNAM);
+                addressRepository.save(add);
+                Candidate can = new Candidate("Name #" + i,
+                        LocalDate.of(1998, rnd.nextInt(1, 13), rnd.nextInt(1, 29)),
+                        add,
+                        rnd.nextLong(1111111111L, 9999999999L) + "",
+                        "email_" + i + "@gmail.com");
+                candidateRepository.save(can);
+                System.out.println("Added: " + can);
+            }
+        };
+    }
 
 }
