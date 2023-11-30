@@ -1,5 +1,7 @@
 package com.example.week05_lab_20010211_huynhminhthu;
 
+import com.example.week05_lab_20010211_huynhminhthu.backend.daos.AddressDao;
+import com.example.week05_lab_20010211_huynhminhthu.backend.daos.CandidateDao;
 import com.example.week05_lab_20010211_huynhminhthu.backend.enums.Country;
 import com.example.week05_lab_20010211_huynhminhthu.backend.models.Address;
 import com.example.week05_lab_20010211_huynhminhthu.backend.models.Candidate;
@@ -26,27 +28,45 @@ public class Week05Lab20010211HuynhMinhThuApplication {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private AddressDao addressDao;
+    @Autowired
+    private CandidateDao candidateDao;
+
     @Bean
     CommandLineRunner initData() {
-        return args -> {
-            Random rnd = new Random();
-            for (int i = 1; i < 1000; i++) {
-//				Address add = new Address(rnd.nextInt(1,1000)+"","Quang Trung","HCM",
-////						rnd.nextInt(70000,80000)+"", Country.VIETNAM);
-                Address add = new Address();
-                add.setStreet("Quang Trung");
-                add.setCity("HCM");
-                add.setNumber(String.valueOf(rnd.nextInt(1,1000)));
-                add.setZipCode(String.valueOf(rnd.nextInt(70000,80000)));
-                add.setCountry(Country.VIETNAM);
-                addressRepository.save(add);
-                Candidate can = new Candidate("Name #" + i,
-                        LocalDate.of(1998, rnd.nextInt(1, 13), rnd.nextInt(1, 29)),
-                        add,
-                        rnd.nextLong(1111111111L, 9999999999L) + "",
-                        "email_" + i + "@gmail.com");
-                candidateRepository.save(can);
-                System.out.println("Added: " + can);
+//        return args -> {
+//            Random rnd = new Random();
+//            for (int i = 1; i < 1000; i++) {
+////				Address add = new Address(rnd.nextInt(1,1000)+"","Quang Trung","HCM",
+//////						rnd.nextInt(70000,80000)+"", Country.VIETNAM);
+//                Address add = new Address();
+//                add.setStreet("Quang Trung");
+//                add.setCity("HCM");
+//                add.setNumber(String.valueOf(rnd.nextInt(1,1000)));
+//                add.setZipCode(String.valueOf(rnd.nextInt(70000,80000)));
+//                add.setCountry(Country.VIETNAM);
+//                addressRepository.save(add);
+//                Candidate can = new Candidate("Name #" + i,
+//                        LocalDate.of(1998, rnd.nextInt(1, 13), rnd.nextInt(1, 29)),
+//                        add,
+//                        rnd.nextLong(1111111111L, 9999999999L) + "",
+//                        "email_" + i + "@gmail.com");
+//                candidateRepository.save(can);
+//                System.out.println("Added: " + can);
+//            }
+//        };
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+                Random rnd = new Random();
+                for (int i = 1; i < 1000; i++) {
+                    Address address = new Address(rnd.nextInt(1, 1000), " ", "Quang Trung", "HCM", rnd.nextInt(70000, 80000) + "", Country.VIETNAM);
+                    addressDao.insert(address);
+                    Candidate can = new Candidate("Name #" + i, LocalDate.of(1998, rnd.nextInt(1, 13), rnd.nextInt(1, 29)), address, rnd.nextLong(1111111111L, 9999999999L) + "", "email_" + i + "@gmail.com");
+                    candidateDao.insert(can);
+                }
+                candidateDao.getAllTList().forEach(System.out::println);
             }
         };
     }
